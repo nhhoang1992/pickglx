@@ -67,17 +67,17 @@ export default async function DashboardPage() {
         <Link href="/chia-tien" className="card hover:border-brand-300">
           <Wallet className="h-7 w-7 text-brand" />
           <h3 className="mt-3 font-semibold text-ink">Chia tiền</h3>
-          <p className="mt-1 text-sm text-ink/70">Sắp ra mắt</p>
+          <p className="mt-1 text-sm text-ink/70">Tạo buổi & chia QR VietQR</p>
         </Link>
-        <Link href="/lich-xe-ve" className="card hover:border-brand-300">
+        <Link href="/dashboard/lich-xe-ve" className="card hover:border-brand-300">
           <Calendar className="h-7 w-7 text-brand" />
           <h3 className="mt-3 font-semibold text-ink">Lịch xé vé</h3>
-          <p className="mt-1 text-sm text-ink/70">Sắp ra mắt</p>
+          <p className="mt-1 text-sm text-ink/70">Quản lý sân & duyệt đăng ký</p>
         </Link>
-        <Link href="/giai-dau" className="card hover:border-brand-300">
+        <Link href="/dashboard/giai-dau" className="card hover:border-brand-300">
           <Trophy className="h-7 w-7 text-brand" />
           <h3 className="mt-3 font-semibold text-ink">Giải đấu</h3>
-          <p className="mt-1 text-sm text-ink/70">Sắp ra mắt</p>
+          <p className="mt-1 text-sm text-ink/70">Round-robin tự sinh lịch + BXH</p>
         </Link>
       </div>
     </div>
