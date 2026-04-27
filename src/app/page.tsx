@@ -1,101 +1,86 @@
-import Image from "next/image";
+import Link from "next/link";
+import { Trophy, Users, Calendar, Wallet } from "lucide-react";
+
+const features = [
+  {
+    icon: Trophy,
+    title: "Giải đấu",
+    desc: "Tổ chức giải vòng tròn, knock-out, Mexicano. Bảng đấu & BXH cập nhật realtime.",
+    href: "/giai-dau",
+  },
+  {
+    icon: Wallet,
+    title: "Chia tiền sinh hoạt",
+    desc: "Chia tiền theo đầu người, số trận, hoặc số giờ chơi. Tự sinh QR VietQR + tick đã chuyển.",
+    href: "/chia-tien",
+  },
+  {
+    icon: Calendar,
+    title: "Lịch xé vé",
+    desc: "Sân đăng khung giờ trống — người chơi đăng ký slot, upload bill, sân duyệt nhanh chóng.",
+    href: "/lich-xe-ve",
+  },
+  {
+    icon: Users,
+    title: "Quản lý CLB",
+    desc: "Đội trưởng duyệt thành viên, quản lý buổi sinh hoạt, quỹ CLB.",
+    href: "/clb",
+  },
+];
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <>
+      <section className="relative overflow-hidden">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-50 via-bg to-accent-50" />
+        <div className="mx-auto max-w-6xl px-4 py-20 md:py-28">
+          <div className="max-w-3xl">
+            <span className="badge bg-brand-100 text-brand-700">Beta · v0.1</span>
+            <h1 className="mt-4 text-4xl font-bold tracking-tight text-ink md:text-6xl">
+              Mọi thứ CLB <span className="text-brand">Pickleball</span> cần — trong một app.
+            </h1>
+            <p className="mt-6 text-lg text-ink/70 md:text-xl">
+              Pickglx giúp CLB tổ chức giải đấu, chia tiền sinh hoạt, và xé vé sân
+              chỉ với vài cú chạm. Miễn phí cho đến khi cộng đồng đủ lớn.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/auth/register" className="btn-primary">
+                Bắt đầu — tạo CLB
+              </Link>
+              <Link href="/giai-dau" className="btn-outline">
+                Xem giải đấu công khai
+              </Link>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-16">
+        <h2 className="text-2xl font-bold text-ink md:text-3xl">Tính năng chính</h2>
+        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {features.map((f) => (
+            <Link key={f.href} href={f.href} className="card hover:border-brand-300 transition-colors">
+              <f.icon className="h-8 w-8 text-brand" />
+              <h3 className="mt-4 text-lg font-semibold text-ink">{f.title}</h3>
+              <p className="mt-2 text-sm text-ink/70">{f.desc}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pb-20">
+        <div className="card flex flex-col items-start justify-between gap-4 bg-brand text-white md:flex-row md:items-center">
+          <div>
+            <h3 className="text-xl font-semibold">Bạn là đội trưởng CLB?</h3>
+            <p className="mt-1 text-white/80">
+              Đăng ký CLB của bạn lên Pickglx — quản lý thành viên, lịch sinh hoạt, và giải đấu chỉ trong vài phút.
+            </p>
+          </div>
+          <Link href="/auth/register" className="btn-accent">
+            Tạo CLB miễn phí
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }

@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pickglx-pg
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: pickglx
+      POSTGRES_PASSWORD: pickglx
+      POSTGRES_DB: pickglx
+    ports:
+      - "5432:5432"
+    volumes:
+      - pickglx_pg_data:/var/lib/postgresql/data
+
+volumes:
+  pickglx_pg_data:
