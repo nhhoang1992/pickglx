@@ -96,6 +96,12 @@ class ShopeeOrderService
     {
         $address = $data['recipient_address'] ?? [];
 
+        $existingOrder = ShopeeOrder::where('shopee_shop_id', $shop->id)
+            ->where('order_sn', $data['order_sn'])
+            ->first();
+
+        $newInternalStatus = $this->mapShopeeStatus($data['order_status'], $existingOrder);
+
         $order = ShopeeOrder::updateOrCreate(
             [
                 'shopee_shop_id' => $shop->id,
@@ -104,7 +110,7 @@ class ShopeeOrderService
             [
                 'business_id' => $shop->business_id,
                 'order_status' => $data['order_status'],
-                'internal_status' => $this->mapShopeeStatus($data['order_status']),
+                'internal_status' => $newInternalStatus,
                 'shipping_carrier' => $data['shipping_carrier'] ?? null,
                 'tracking_number' => $data['tracking_number'] ?? null,
                 'buyer_username' => $data['buyer_username'] ?? null,
@@ -156,10 +162,27 @@ class ShopeeOrderService
         return $order;
     }
 
-    protected function mapShopeeStatus(string $shopeeStatus): string
+    protected function mapShopeeStatus(string $shopeeStatus, ?ShopeeOrder $existingOrder = null): string
     {
-        // Don't downgrade internal status if already advanced
-        return ShopeeOrder::SHOPEE_STATUS_MAP[$shopeeStatus] ?? 'new';
+        $newStatus = ShopeeOrder::SHOPEE_STATUS_MAP[$shopeeStatus] ?? 'new';
+
+        if ($existingOrder) {
+            $priority = [
+                'new' => 0, 'confirmed' => 1, 'packing' => 2,
+                'ready_to_ship' => 3, 'shipped' => 4, 'delivering' => 5,
+                'completed' => 6, 'returned' => 7, 'cancelled' => 7,
+            ];
+
+            $currentPriority = $priority[$existingOrder->internal_status] ?? 0;
+            $newPriority = $priority[$newStatus] ?? 0;
+
+            // Don't downgrade, but always apply terminal statuses
+            if ($newPriority <= $currentPriority && !in_array($newStatus, ['completed', 'cancelled', 'returned'])) {
+                return $existingOrder->internal_status;
+            }
+        }
+
+        return $newStatus;
     }
 
     public function confirmOrder(ShopeeOrder $order): bool

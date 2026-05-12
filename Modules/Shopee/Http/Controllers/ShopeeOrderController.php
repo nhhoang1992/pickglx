@@ -102,7 +102,7 @@ class ShopeeOrderController extends Controller
         $messages = [];
 
         // Sync multiple statuses to cover all orders
-        $statusesToSync = ['READY_TO_SHIP', 'PROCESSED', 'SHIPPED', 'COMPLETED', 'CANCELLED'];
+        $statusesToSync = ['UNPAID', 'READY_TO_SHIP', 'PROCESSED', 'SHIPPED', 'TO_CONFIRM_RECEIVE', 'IN_CANCEL', 'CANCELLED', 'COMPLETED'];
 
         foreach ($shops as $shop) {
             foreach ($statusesToSync as $status) {

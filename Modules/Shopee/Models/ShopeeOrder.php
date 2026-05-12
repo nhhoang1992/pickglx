@@ -36,15 +36,29 @@ class ShopeeOrder extends Model
         'cancelled' => 'Hủy',
     ];
 
+    // Shopee API v2 order_status → internal_status mapping
+    // UNPAID: buyer placed order but hasn't paid
+    // READY_TO_SHIP: buyer paid, seller needs to arrange shipment
+    // PROCESSED: seller arranged shipment, waiting for courier pickup
+    // SHIPPED: courier picked up package, in transit
+    // TO_CONFIRM_RECEIVE: delivered, waiting buyer confirmation
+    // COMPLETED: buyer confirmed receipt / auto-completed
+    // IN_CANCEL / CANCELLED: order cancelled
+    // INVOICE_PENDING: waiting for invoice (some regions)
+    // RETRY_SHIP: shipment failed, need to retry
+    // TO_RETURN: buyer requested return
     const SHOPEE_STATUS_MAP = [
         'UNPAID' => 'new',
-        'READY_TO_SHIP' => 'confirmed',
+        'READY_TO_SHIP' => 'new',
         'PROCESSED' => 'ready_to_ship',
         'SHIPPED' => 'shipped',
+        'TO_CONFIRM_RECEIVE' => 'delivering',
         'COMPLETED' => 'completed',
         'IN_CANCEL' => 'cancelled',
         'CANCELLED' => 'cancelled',
         'INVOICE_PENDING' => 'new',
+        'RETRY_SHIP' => 'ready_to_ship',
+        'TO_RETURN' => 'returned',
     ];
 
     public function items()
