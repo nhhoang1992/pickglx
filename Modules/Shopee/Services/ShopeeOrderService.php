@@ -128,8 +128,7 @@ class ShopeeOrderService
                 'currency' => $data['currency'] ?? 'VND',
                 'days_to_ship' => $data['days_to_ship'] ?? null,
                 'ship_by_date' => isset($data['ship_by_date']) ? date('Y-m-d H:i:s', $data['ship_by_date']) : null,
-                'is_express' => ($data['checkout_shipping_carrier'] ?? '') === 'Hỏa Tốc'
-                    || str_contains($data['shipping_carrier'] ?? '', 'Express'),
+                'is_express' => in_array($data['checkout_shipping_carrier'] ?? '', ['Hỏa Tốc', 'Hỏa tốc', 'Instant']),
                 'message_to_seller' => $data['note'] ?? null,
                 'order_created_at' => isset($data['create_time']) ? date('Y-m-d H:i:s', $data['create_time']) : null,
                 'order_paid_at' => isset($data['pay_time']) ? date('Y-m-d H:i:s', $data['pay_time']) : null,
