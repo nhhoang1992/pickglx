@@ -26,7 +26,13 @@
     @if($shops->count() > 0)
     <div class="row" style="margin-bottom: 10px;">
         <div class="col-sm-12">
-            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                <a href="{{ route('shopee.product-mappings') }}"
+                   style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 14px;
+                          {{ !$shopId ? 'background: #333; color: #fff; font-weight: bold;' : 'background: #f0f0f0; color: #333;' }}">
+                    <i class="fas fa-globe" style="font-size: 12px;"></i>
+                    @lang('shopee::lang.all_shops')
+                </a>
                 @foreach($shops as $shop)
                     <a href="{{ route('shopee.product-mappings', ['shop_id' => $shop->id]) }}"
                        style="display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 20px; text-decoration: none; font-size: 14px;

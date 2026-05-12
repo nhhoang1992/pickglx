@@ -7,6 +7,36 @@
 <section class="content-header">
     <h1 class="tw-text-xl md:tw-text-3xl tw-font-bold tw-text-black">
         <i class="fas fa-shopping-bag"></i> @lang('shopee::lang.order_list')
+        @if($shops->count() > 0)
+        <div class="pull-right" style="margin-top: -5px;">
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="font-size: 14px;">
+                    <i class="fas fa-store" style="color: #ee4d2d;"></i>
+                    @if($shopId && $shops->firstWhere('id', $shopId))
+                        {{ $shops->firstWhere('id', $shopId)->shop_name }}
+                    @else
+                        @lang('shopee::lang.all_shops')
+                    @endif
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right">
+                    <li class="{{ !$shopId ? 'active' : '' }}">
+                        <a href="{{ route('shopee.orders', array_merge(request()->except('shop_id', 'page'), ['shop_id' => ''])) }}">
+                            <i class="fas fa-globe"></i> @lang('shopee::lang.all_shops')
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    @foreach($shops as $shop)
+                        <li class="{{ $shopId == $shop->id ? 'active' : '' }}">
+                            <a href="{{ route('shopee.orders', array_merge(request()->except('shop_id', 'page'), ['shop_id' => $shop->id])) }}">
+                                <i class="fas fa-store" style="color: #ee4d2d;"></i> {{ $shop->shop_name ?: 'Shop ' . $shop->shop_id }}
+                            </a>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        </div>
+        @endif
     </h1>
 </section>
 
@@ -82,9 +112,8 @@
                         </div>
 
                         <!-- Shop Filter -->
-                        @if($shops->count() > 1)
                         <div class="form-group" style="margin-right: 10px; margin-bottom: 5px;">
-                            <select name="shop_id" class="form-control">
+                            <select name="shop_id" class="form-control" onchange="this.form.submit()">
                                 <option value="">@lang('shopee::lang.all_shops')</option>
                                 @foreach($shops as $shop)
                                     <option value="{{ $shop->id }}" {{ ($shopId ?? '') == $shop->id ? 'selected' : '' }}>
@@ -93,7 +122,6 @@
                                 @endforeach
                             </select>
                         </div>
-                        @endif
 
                         <!-- Date Range -->
                         <div class="form-group" style="margin-right: 10px; margin-bottom: 5px;">
@@ -197,8 +225,8 @@
                                     @if($order->tracking_number)
                                         <br><small class="text-muted"><i class="fas fa-truck"></i> {{ $order->tracking_number }}</small>
                                     @endif
-                                    @if($shops->count() > 1 && $order->shop)
-                                        <br><small class="text-muted"><i class="fas fa-store"></i> {{ $order->shop->shop_name }}</small>
+                                    @if($order->shop)
+                                        <br><small class="text-muted"><i class="fas fa-store" style="color: #ee4d2d;"></i> {{ $order->shop->shop_name }}</small>
                                     @endif
                                 </td>
                                 <td style="vertical-align: top; padding-top: 12px;">
