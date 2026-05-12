@@ -62,24 +62,21 @@ Route::middleware(['web', 'auth', 'SetSessionData', 'language', 'timezone', 'Adm
         Route::get('/product-mappings', [ShopeeProductMappingController::class, 'index'])
             ->name('shopee.product-mappings');
 
-        Route::get('/product-mappings/create', [ShopeeProductMappingController::class, 'create'])
-            ->name('shopee.product-mappings.create');
+        Route::post('/product-mappings/sync-products', [ShopeeProductMappingController::class, 'syncProducts'])
+            ->name('shopee.product-mappings.sync-products');
 
-        Route::post('/product-mappings', [ShopeeProductMappingController::class, 'store'])
-            ->name('shopee.product-mappings.store');
+        Route::post('/product-mappings/link', [ShopeeProductMappingController::class, 'linkProduct'])
+            ->name('shopee.product-mappings.link');
+
+        Route::post('/product-mappings/unlink', [ShopeeProductMappingController::class, 'unlinkProduct'])
+            ->name('shopee.product-mappings.unlink');
 
         Route::post('/product-mappings/auto-match', [ShopeeProductMappingController::class, 'autoMatch'])
             ->name('shopee.product-mappings.auto-match');
 
-        Route::get('/product-mappings/{id}/edit', [ShopeeProductMappingController::class, 'edit'])
-            ->name('shopee.product-mappings.edit');
-
-        Route::put('/product-mappings/{id}', [ShopeeProductMappingController::class, 'update'])
-            ->name('shopee.product-mappings.update');
-
-        Route::delete('/product-mappings/{id}', [ShopeeProductMappingController::class, 'destroy'])
-            ->name('shopee.product-mappings.destroy');
-
         Route::get('/product-mappings/variations', [ShopeeProductMappingController::class, 'getVariations'])
             ->name('shopee.product-mappings.variations');
+
+        Route::get('/product-mappings/search-variations', [ShopeeProductMappingController::class, 'searchVariations'])
+            ->name('shopee.product-mappings.search-variations');
     });
