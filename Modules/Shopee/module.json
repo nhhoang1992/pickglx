@@ -1,0 +1,11 @@
+{
+    "name": "Shopee",
+    "alias": "shopee",
+    "description": "Shopee Open Platform integration for inventory and order management",
+    "keywords": ["shopee", "ecommerce", "integration"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Shopee\\Providers\\ShopeeServiceProvider"
+    ],
+    "files": []
+}
