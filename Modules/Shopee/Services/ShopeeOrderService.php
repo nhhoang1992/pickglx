@@ -43,7 +43,7 @@ class ShopeeOrderService
                     $params['cursor'] = $cursor;
                 }
 
-                $response = $client->order->getOrderList($params);
+                $response = $client->Order->getOrderList($params);
 
                 if (!isset($response['order_list'])) {
                     break;
@@ -77,8 +77,7 @@ class ShopeeOrderService
 
         foreach ($chunks as $chunk) {
             try {
-                $details = $client->order->getOrderDetail([
-                    'order_sn_list' => implode(',', $chunk),
+                $details = $client->Order->getOrderDetail($chunk, [
                     'response_optional_fields' => 'buyer_user_id,buyer_username,estimated_shipping_fee,recipient_address,actual_shipping_fee,goods_to_declare,note,note_update_time,item_list,pay_time,dropshipper,credit_card_number,dropshipper_phone,split_up,buyer_cancel_reason,cancel_by,cancel_reason,actual_shipping_fee_confirmed,buyer_cpf_id,fulfillment_flag,pickup_done_time,package_list,shipping_carrier,payment_method,total_amount,invoice_data,checkout_shipping_carrier,reverse_shipping_fee,order_chargeable_weight_gram',
                 ]);
 
@@ -273,9 +272,7 @@ class ShopeeOrderService
             $client = $this->api->createClientForShop($shop);
 
             // Get shipping parameter first
-            $shippingParams = $client->logistics->getShippingParameter([
-                'order_sn' => $order->order_sn,
-            ]);
+            $shippingParams = $client->Logistic->getShippingParameter($order->order_sn);
 
             $pickup = $shippingParams['info_needed']['pickup'] ?? null;
             $dropoff = $shippingParams['info_needed']['dropoff'] ?? null;
@@ -284,27 +281,17 @@ class ShopeeOrderService
                 $addressList = $pickup['address_list'] ?? [];
                 $addressId = $addressList[0]['address_id'] ?? null;
 
-                $client->logistics->shipOrder([
-                    'order_sn' => $order->order_sn,
-                    'pickup' => [
-                        'address_id' => $addressId,
-                    ],
+                $client->Logistic->shipOrder($order->order_sn, '', [
+                    'address_id' => $addressId,
                 ]);
             } elseif ($dropoff) {
-                $client->logistics->shipOrder([
-                    'order_sn' => $order->order_sn,
-                    'dropoff' => new \stdClass(),
-                ]);
+                $client->Logistic->shipOrder($order->order_sn, '', [], []);
             } else {
-                $client->logistics->shipOrder([
-                    'order_sn' => $order->order_sn,
-                ]);
+                $client->Logistic->shipOrder($order->order_sn);
             }
 
             // Get tracking number
-            $trackingInfo = $client->logistics->getTrackingNumber([
-                'order_sn' => $order->order_sn,
-            ]);
+            $trackingInfo = $client->Logistic->getTrackingNumber($order->order_sn);
 
             $order->update([
                 'internal_status' => 'shipped',

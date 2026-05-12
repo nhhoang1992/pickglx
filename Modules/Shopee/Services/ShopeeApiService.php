@@ -16,7 +16,7 @@ class ShopeeApiService
         $client = new Client($config->partner_id, $config->partner_key);
 
         if ($config->sandbox_mode) {
-            $client->setApiUrl(config('shopee.sandbox_host'));
+            $client->useDebugMode();
         }
 
         $this->client = $client;
@@ -27,14 +27,14 @@ class ShopeeApiService
     {
         $config = $shop->config;
         $client = $this->createClient($config);
-        $client->setShopId($shop->shop_id);
 
         if ($shop->isTokenExpired() && $shop->refresh_token) {
             $this->refreshToken($shop);
+            $shop->refresh();
         }
 
         if ($shop->access_token) {
-            $client->setAccessToken($shop->access_token);
+            $client->setAccessToken($shop->shop_id, $shop->access_token);
         }
 
         return $client;
@@ -88,7 +88,7 @@ class ShopeeApiService
     {
         try {
             $client = $this->createClientForShop($shop);
-            $info = $client->shop->getShopInfo();
+            $info = $client->Shop->getShopInfo();
 
             $shop->update([
                 'shop_name' => $info['shop_name'] ?? $shop->shop_name,

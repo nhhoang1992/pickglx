@@ -27,7 +27,7 @@ class ShopeeProductService
             $more = true;
 
             while ($more) {
-                $response = $client->product->getItemList([
+                $response = $client->Product->getItemList([
                     'offset' => $offset,
                     'page_size' => $pageSize,
                     'item_status' => 'NORMAL',
@@ -49,7 +49,7 @@ class ShopeeProductService
             $offset = 0;
             $more = true;
             while ($more) {
-                $response = $client->product->getItemList([
+                $response = $client->Product->getItemList([
                     'offset' => $offset,
                     'page_size' => $pageSize,
                     'item_status' => 'UNLIST',
@@ -85,9 +85,7 @@ class ShopeeProductService
 
         foreach ($chunks as $chunk) {
             try {
-                $details = $client->product->getItemBaseInfo([
-                    'item_id_list' => implode(',', $chunk),
-                ]);
+                $details = $client->Product->getItemBaseInfo($chunk);
 
                 foreach ($details['item_list'] ?? [] as $itemData) {
                     $this->saveProduct($shop, $itemData);
@@ -95,9 +93,7 @@ class ShopeeProductService
                     // Fetch model info if product has models
                     if ($itemData['has_model'] ?? false) {
                         try {
-                            $modelInfo = $client->product->getModelList([
-                                'item_id' => $itemData['item_id'],
-                            ]);
+                            $modelInfo = $client->Product->getModelList($itemData['item_id']);
                             $product = ShopeeProduct::where('shopee_shop_id', $shop->id)
                                 ->where('item_id', $itemData['item_id'])
                                 ->first();
