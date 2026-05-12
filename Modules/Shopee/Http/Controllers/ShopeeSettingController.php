@@ -45,14 +45,21 @@ class ShopeeSettingController extends Controller
 
         $businessId = session('business.id');
 
+        $data = [
+            'partner_id' => $request->partner_id,
+            'sandbox_mode' => $request->boolean('sandbox_mode', false),
+            'is_active' => true,
+        ];
+
+        // Only update partner_key if a real value was provided (not the masked placeholder)
+        $partnerKey = $request->partner_key;
+        if ($partnerKey && !preg_match('/^\*+$/', $partnerKey)) {
+            $data['partner_key'] = $partnerKey;
+        }
+
         $config = ShopeeConfig::updateOrCreate(
             ['business_id' => $businessId],
-            [
-                'partner_id' => $request->partner_id,
-                'partner_key' => $request->partner_key,
-                'sandbox_mode' => $request->boolean('sandbox_mode', false),
-                'is_active' => true,
-            ]
+            $data
         );
 
         return redirect()->route('shopee.settings')
