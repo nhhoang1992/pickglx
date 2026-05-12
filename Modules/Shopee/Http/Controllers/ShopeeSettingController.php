@@ -50,7 +50,7 @@ class ShopeeSettingController extends Controller
             [
                 'partner_id' => $request->partner_id,
                 'partner_key' => $request->partner_key,
-                'sandbox_mode' => $request->boolean('sandbox_mode', true),
+                'sandbox_mode' => $request->boolean('sandbox_mode', false),
                 'is_active' => true,
             ]
         );
