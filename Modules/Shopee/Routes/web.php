@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Shopee\Http\Controllers\ShopeeAuthController;
 use Modules\Shopee\Http\Controllers\ShopeeOrderController;
 use Modules\Shopee\Http\Controllers\ShopeeProductMappingController;
+use Modules\Shopee\Http\Controllers\ShopeeReportController;
 use Modules\Shopee\Http\Controllers\ShopeeSettingController;
 
 Route::middleware(['web', 'auth', 'SetSessionData', 'language', 'timezone', 'AdminSidebarMenu'])
@@ -79,4 +80,20 @@ Route::middleware(['web', 'auth', 'SetSessionData', 'language', 'timezone', 'Adm
 
         Route::get('/product-mappings/search-variations', [ShopeeProductMappingController::class, 'searchVariations'])
             ->name('shopee.product-mappings.search-variations');
+
+        // Report routes
+        Route::get('/reports', [ShopeeReportController::class, 'dashboard'])
+            ->name('shopee.reports.dashboard');
+
+        Route::get('/reports/order-analysis', [ShopeeReportController::class, 'orderAnalysis'])
+            ->name('shopee.reports.order-analysis');
+
+        Route::get('/reports/top-products', [ShopeeReportController::class, 'topProducts'])
+            ->name('shopee.reports.top-products');
+
+        Route::get('/reports/shipping', [ShopeeReportController::class, 'shipping'])
+            ->name('shopee.reports.shipping');
+
+        Route::get('/reports/reconciliation', [ShopeeReportController::class, 'reconciliation'])
+            ->name('shopee.reports.reconciliation');
     });

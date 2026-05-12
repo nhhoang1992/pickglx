@@ -905,6 +905,11 @@ class AdminSidebarMenu
                             ['icon' => '', 'active' => request()->segment(1) == 'shopee' && request()->segment(2) == 'settings']
                         );
                         $sub->url(
+                            route('shopee.reports.dashboard'),
+                            __('shopee::lang.report_menu'),
+                            ['icon' => '', 'active' => request()->segment(1) == 'shopee' && request()->segment(2) == 'reports']
+                        );
+                        $sub->url(
                             route('shopee.sync-logs'),
                             __('shopee::lang.sync_logs'),
                             ['icon' => '', 'active' => request()->segment(1) == 'shopee' && request()->segment(2) == 'sync-logs']
