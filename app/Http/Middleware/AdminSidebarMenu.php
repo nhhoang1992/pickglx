@@ -890,6 +890,11 @@ class AdminSidebarMenu
                     __('shopee::lang.shopee'),
                     function ($sub) {
                         $sub->url(
+                            route('shopee.orders'),
+                            __('shopee::lang.order_list'),
+                            ['icon' => '', 'active' => request()->segment(1) == 'shopee' && request()->segment(2) == 'orders']
+                        );
+                        $sub->url(
                             route('shopee.settings'),
                             __('shopee::lang.shopee_settings'),
                             ['icon' => '', 'active' => request()->segment(1) == 'shopee' && request()->segment(2) == 'settings']
