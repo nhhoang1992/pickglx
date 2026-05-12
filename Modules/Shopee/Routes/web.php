@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Shopee\Http\Controllers\ShopeeAuthController;
 use Modules\Shopee\Http\Controllers\ShopeeOrderController;
+use Modules\Shopee\Http\Controllers\ShopeeProductMappingController;
 use Modules\Shopee\Http\Controllers\ShopeeSettingController;
 
 Route::middleware(['web', 'auth', 'SetSessionData', 'language', 'timezone', 'AdminSidebarMenu'])
@@ -56,4 +57,29 @@ Route::middleware(['web', 'auth', 'SetSessionData', 'language', 'timezone', 'Adm
 
         Route::post('/orders/{id}/note', [ShopeeOrderController::class, 'updateNote'])
             ->name('shopee.orders.note');
+
+        // Product mapping routes
+        Route::get('/product-mappings', [ShopeeProductMappingController::class, 'index'])
+            ->name('shopee.product-mappings');
+
+        Route::get('/product-mappings/create', [ShopeeProductMappingController::class, 'create'])
+            ->name('shopee.product-mappings.create');
+
+        Route::post('/product-mappings', [ShopeeProductMappingController::class, 'store'])
+            ->name('shopee.product-mappings.store');
+
+        Route::post('/product-mappings/auto-match', [ShopeeProductMappingController::class, 'autoMatch'])
+            ->name('shopee.product-mappings.auto-match');
+
+        Route::get('/product-mappings/{id}/edit', [ShopeeProductMappingController::class, 'edit'])
+            ->name('shopee.product-mappings.edit');
+
+        Route::put('/product-mappings/{id}', [ShopeeProductMappingController::class, 'update'])
+            ->name('shopee.product-mappings.update');
+
+        Route::delete('/product-mappings/{id}', [ShopeeProductMappingController::class, 'destroy'])
+            ->name('shopee.product-mappings.destroy');
+
+        Route::get('/product-mappings/variations', [ShopeeProductMappingController::class, 'getVariations'])
+            ->name('shopee.product-mappings.variations');
     });

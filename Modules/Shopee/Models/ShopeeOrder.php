@@ -20,6 +20,8 @@ class ShopeeOrder extends Model
         'confirmed_at' => 'datetime',
         'packed_at' => 'datetime',
         'shipped_at' => 'datetime',
+        'stock_deducted' => 'boolean',
+        'stock_deducted_at' => 'datetime',
     ];
 
     const INTERNAL_STATUSES = [

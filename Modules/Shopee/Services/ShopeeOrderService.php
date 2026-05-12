@@ -2,8 +2,10 @@
 
 namespace Modules\Shopee\Services;
 
+use App\Utils\ProductUtil;
 use Modules\Shopee\Models\ShopeeOrder;
 use Modules\Shopee\Models\ShopeeOrderItem;
+use Modules\Shopee\Models\ShopeeProductMapping;
 use Modules\Shopee\Models\ShopeeShop;
 
 class ShopeeOrderService
@@ -168,7 +170,83 @@ class ShopeeOrderService
             'confirmed_by' => auth()->id(),
             'confirmed_at' => now(),
         ]);
+
+        // Auto deduct stock for mapped products
+        if (!$order->stock_deducted) {
+            $this->deductStock($order);
+        }
+
         return true;
+    }
+
+    public function deductStock(ShopeeOrder $order): array
+    {
+        $results = ['deducted' => 0, 'skipped' => 0, 'items' => []];
+        $productUtil = app(ProductUtil::class);
+
+        // Get the first business location as default
+        $location = \App\BusinessLocation::where('business_id', $order->business_id)
+            ->first();
+
+        if (!$location) {
+            return $results;
+        }
+
+        $order->load('items');
+
+        foreach ($order->items as $item) {
+            // Find mapping by shopee_item_id + model_id
+            $mapping = ShopeeProductMapping::where('shopee_shop_id', $order->shopee_shop_id)
+                ->where('shopee_item_id', $item->item_id)
+                ->where('is_active', true)
+                ->where('auto_destock', true)
+                ->when($item->model_id, function ($q) use ($item) {
+                    $q->where('shopee_model_id', $item->model_id);
+                }, function ($q) {
+                    $q->whereNull('shopee_model_id');
+                })
+                ->first();
+
+            // Fallback: try to match by SKU
+            if (!$mapping && ($item->model_sku || $item->item_sku)) {
+                $sku = $item->model_sku ?: $item->item_sku;
+                $mapping = ShopeeProductMapping::where('business_id', $order->business_id)
+                    ->where('shopee_sku', $sku)
+                    ->where('is_active', true)
+                    ->where('auto_destock', true)
+                    ->first();
+            }
+
+            if ($mapping) {
+                $productUtil->decreaseProductQuantity(
+                    $mapping->product_id,
+                    $mapping->variation_id,
+                    $location->id,
+                    $item->quantity
+                );
+                $results['deducted']++;
+                $results['items'][] = [
+                    'item_name' => $item->item_name,
+                    'sku' => $item->model_sku ?: $item->item_sku,
+                    'quantity' => $item->quantity,
+                    'product_id' => $mapping->product_id,
+                ];
+            } else {
+                $results['skipped']++;
+            }
+        }
+
+        if ($results['deducted'] > 0) {
+            $order->update([
+                'stock_deducted' => true,
+                'stock_deducted_at' => now(),
+            ]);
+
+            $this->api->log($order->shop, 'order_action', 'success',
+                "Order {$order->order_sn}: deducted stock for {$results['deducted']} items, skipped {$results['skipped']}");
+        }
+
+        return $results;
     }
 
     public function markPacking(ShopeeOrder $order): bool
