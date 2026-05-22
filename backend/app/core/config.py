@@ -29,6 +29,22 @@ class Settings(BaseSettings):
     SHOPEE_SHOP_ID: str = ""
     SHOPEE_SYNC_ENABLED: bool = True
 
+    # MoMo AIO
+    MOMO_PARTNER_CODE: str = ""
+    MOMO_ACCESS_KEY: str = ""
+    MOMO_SECRET_KEY: str = ""
+    MOMO_ENDPOINT: str = "https://test-payment.momo.vn/v2/gateway/api/create"
+    MOMO_RETURN_URL: str = "https://phukienhatde.vn/checkout/payment-result"
+    MOMO_NOTIFY_URL: str = "https://phukienhatde.vn/api/v1/payments/momo/ipn"
+
+    # ZaloPay v2
+    ZALOPAY_APP_ID: str = ""
+    ZALOPAY_KEY1: str = ""
+    ZALOPAY_KEY2: str = ""
+    ZALOPAY_ENDPOINT: str = "https://sb-openapi.zalopay.vn/v2/create"
+    ZALOPAY_CALLBACK_URL: str = "https://phukienhatde.vn/api/v1/payments/zalopay/callback"
+    ZALOPAY_REDIRECT_URL: str = "https://phukienhatde.vn/checkout/payment-result"
+
     REDIS_URL: str = "redis://localhost:6379/0"
 
     BACKEND_CORS_ORIGINS: list[str] = [

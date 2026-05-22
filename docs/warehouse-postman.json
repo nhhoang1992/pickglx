@@ -1,0 +1,116 @@
+{
+  "info": {
+    "name": "Phụ Kiện Hạt Dẻ - Warehouse Integration",
+    "_postman_id": "phukienhatde-warehouse-v1",
+    "description": "API tích hợp giữa phần mềm quản lý kho tự viết và website phukienhatde.vn",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "base_url", "value": "https://api.phukienhatde.vn/api/v1"},
+    {"key": "api_key", "value": "your-api-key-here"},
+    {"key": "webhook_secret", "value": "your-webhook-secret-here"}
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {"key": "key", "value": "X-API-Key"},
+      {"key": "value", "value": "{{api_key}}"},
+      {"key": "in", "value": "header"}
+    ]
+  },
+  "item": [
+    {
+      "name": "1. Realtime stock query (single SKU)",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/inventory/products/SP-1001",
+        "description": "Trả về tồn kho hiện tại + lượt bán + trạng thái active của 1 SKU."
+      }
+    },
+    {
+      "name": "2. Realtime stock query (bulk)",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/inventory/products?skus=SP-1001,SP-1002,SP-1003"
+      }
+    },
+    {
+      "name": "3. Bulk inventory sync from warehouse",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/inventory/sync",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{api_key}}"},
+          {"key": "X-Timestamp", "value": "{{$timestamp}}"},
+          {"key": "X-Signature", "value": "<computed_hmac_sha256>"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"items\": [\n    {\"sku\": \"SP-1001\", \"quantity\": 50, \"warehouse\": \"HCM-Q1\"},\n    {\"sku\": \"SP-1002\", \"quantity\": 120, \"warehouse\": \"HCM-Q1\"}\n  ]\n}"
+        }
+      }
+    },
+    {
+      "name": "4. Inventory webhook (warehouse -> website)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/inventory/webhooks/inventory-update",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-Signature", "value": "<computed_hmac_sha256>"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"sku\": \"SP-1001\",\n  \"quantity\": 50,\n  \"warehouse\": \"HCM-Q1\",\n  \"updated_at\": \"2025-05-22T10:00:00Z\"\n}"
+        }
+      }
+    },
+    {
+      "name": "5. Deduct stock (manual adjustment)",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/inventory/deduct",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{api_key}}"},
+          {"key": "X-Timestamp", "value": "{{$timestamp}}"},
+          {"key": "X-Signature", "value": "<computed_hmac_sha256>"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"order_id\": \"ADJUST-2025-001\",\n  \"items\": [{\"sku\": \"SP-1001\", \"quantity\": 2}]\n}"
+        }
+      }
+    },
+    {
+      "name": "6. Restore stock",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/inventory/restore",
+        "header": [
+          {"key": "Content-Type", "value": "application/json"},
+          {"key": "X-API-Key", "value": "{{api_key}}"},
+          {"key": "X-Timestamp", "value": "{{$timestamp}}"},
+          {"key": "X-Signature", "value": "<computed_hmac_sha256>"}
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"order_id\": \"ORD-20250522-ABC123\",\n  \"items\": [{\"sku\": \"SP-1001\", \"quantity\": 2}],\n  \"reason\": \"customer_returned\"\n}"
+        }
+      }
+    },
+    {
+      "name": "7. Update order status (warehouse -> website)",
+      "request": {
+        "method": "PATCH",
+        "url": "{{base_url}}/orders/ORD-20250522-ABC123/status",
+        "header": [{"key": "Content-Type", "value": "application/json"}],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"shipping\",\n  \"note\": \"Đã giao GHN, mã VĐ: 1234567\"\n}"
+        }
+      }
+    }
+  ]
+}

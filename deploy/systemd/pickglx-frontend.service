@@ -1,0 +1,22 @@
+[Unit]
+Description=Phụ Kiện Hạt Dẻ Frontend (Next.js)
+After=network.target pickglx-backend.service
+Wants=pickglx-backend.service
+
+[Service]
+Type=simple
+User=pickglx
+Group=pickglx
+WorkingDirectory=/srv/pickglx/frontend
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=NEXT_PUBLIC_API_URL=https://api.phukienhatde.vn/api/v1
+ExecStart=/usr/bin/node /srv/pickglx/frontend/.next/standalone/server.js
+Restart=on-failure
+RestartSec=5
+
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

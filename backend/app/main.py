@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api.v1 import inventory, orders, products, shopee
+from app.api.v1 import inventory, orders, payments, products, shopee
 from app.core.config import settings
 from app.db.session import Base, engine
 
@@ -58,4 +58,5 @@ def health_check():
 app.include_router(products.router, prefix="/api/v1")
 app.include_router(orders.router, prefix="/api/v1")
 app.include_router(inventory.router, prefix="/api/v1")
+app.include_router(payments.router, prefix="/api/v1")
 app.include_router(shopee.router, prefix="/api/v1")
